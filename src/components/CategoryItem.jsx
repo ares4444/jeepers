@@ -33,6 +33,10 @@ const Button = styled.button`
     font-size: 20px;
     background-color: transparent;
     cursor: pointer;
+
+    &:hover{
+        background-color: #ff8b07;
+    }
 `
 
 const CategoryItem = ({item}) => {

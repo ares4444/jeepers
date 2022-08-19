@@ -15,6 +15,7 @@ const Info = styled.div`
     align-items: center;
     justify-content: center;
     transition: all 0.5s ease;
+    cursor: pointer;
 `;
 
 const Container = styled.div`
@@ -59,7 +60,7 @@ const Icon = styled.div`
     transition: all 0.5s ease;
 
     &:hover{
-        background-color: #e9f5f5;
+        background-color: #ff8b07;
         transform: scale(1.1)
     }
 `;
