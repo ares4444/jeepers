@@ -1,3 +1,4 @@
+import { mobile } from '../responsive';
 import styled from "styled-components"
 
 const Container = styled.div`
@@ -9,6 +10,7 @@ const Container = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    ${mobile({backgroundSize: '115vh'})}
 `;
 
 const Wrapper = styled.div`
@@ -16,6 +18,7 @@ const Wrapper = styled.div`
     width: 40%;
     background-color: white;
     opacity: 0.85;
+    ${mobile({width: '75%'})}
 `;
 
 const Title = styled.h1`

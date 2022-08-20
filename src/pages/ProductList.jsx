@@ -4,6 +4,7 @@ import Announcement from "../components/Announcement";
 import Products from "../components/Products";
 import Newsletter from "../components/Newsletter";
 import Footer from "../components/Footer";
+import { mobile } from '../responsive';
 
 const Container = styled.div`
 
@@ -20,49 +21,48 @@ const FilterContainer = styled.div`
 
 const Filter = styled.div`
     margin: 2px;
+    ${mobile({width: '0px 20px', display: 'flex', flexDirection: 'column'})}
 `;
 
 const FilterText = styled.span`
     font-size: 20px;
     font-weight: 600;
     margin-right: 20px;
+    ${mobile({marginRight: '0px'})}
 `;
 
 const Select = styled.select`
     padding: 10px;
     margin-right: 20px;
+    ${mobile({margin: '10px 0px'})}
 `;
 
-const Option = styled.option`
-
-`;
+const Option = styled.option``;
 
 const ProductList = () => {
   return (
     <Container>
         <Navbar />
         <Announcement />
-        <Title>Accessories</Title>
+        <Title>Wheels & Accessories</Title>
         <FilterContainer>
             <Filter>
                 <FilterText>Filter Products:</FilterText>
                 <Select>
-                    <Option disable selected>Color</Option>
-                    <Option>White</Option>
-                    <Option>Black</Option>
-                    <Option>Red</Option>
-                    <Option>Blue</Option>
-                    <Option>Yellow</Option>
-                    <Option>Orange</Option>
-                    <Option>Green</Option>
+                    <Option disable selected>Type</Option>
+                    <Option>Accessories</Option>
+                    <Option>Wheels</Option>
+                    <Option>Rims</Option>
+                    <Option>Lift Kits</Option>
                 </Select>
                 <Select>
-                    <Option disable selected>Size</Option>
-                    <Option>XS</Option>
-                    <Option>S</Option>
-                    <Option>M</Option>
-                    <Option>L</Option>
-                    <Option>XL</Option>
+                    <Option disable selected>Tire Size</Option>
+                    <Option>N/A</Option>
+                    <Option>15"</Option>
+                    <Option>16"</Option>
+                    <Option>17"</Option>
+                    <Option>18"</Option>
+                    <Option>20"</Option>
                 </Select>
             </Filter>
             <Filter>
