@@ -4,6 +4,7 @@ import Announcement from "../components/Announcement"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import Newsletter from "../components/Newsletter"
+import { mobile } from '../responsive';
 
 const Container = styled.div`
 
@@ -12,6 +13,7 @@ const Container = styled.div`
 const Wrapper = styled.div`
     padding: 50px;
     display: flex;
+    ${mobile({flexDirection: 'column', padding: '10px'})}
 `;
 
 const ImgContainer = styled.div`
@@ -22,11 +24,13 @@ const Image = styled.img`
     width: 100%;
     height: 90vh;
     object-fit: cover;
+    ${mobile({height: '40vh'})}
 `;
 
 const InfoContainer = styled.div`
     flex: 1;
     padding: 0px 50px;
+    ${mobile({padding: '10px'})}
 `;
 
 const Title = styled.h1`
@@ -47,6 +51,7 @@ const FilterContainer = styled.div`
     width: 50%;
     margin: 30px;
     justify-content: space-between;
+    ${mobile({width: '100%', margin: '30px 0px'})}
 `;
 
 const Filter = styled.div`
@@ -65,6 +70,7 @@ const FilterColor = styled.div`
     border-radius: 50%;
     background-color: ${props => props.color};
     margin: 0px 5px;
+    border: 1px solid black;
     cursor: pointer;
 `;
 
@@ -81,6 +87,7 @@ const AddContainer = styled.div`
     align-items: center;
     width: 50%;
     justify-content: space-between;
+    ${mobile({width: '100%'})}
 `;
 
 const AmountContainer = styled.div`
@@ -129,17 +136,19 @@ const Product = () => {
                     <Filter>
                         <FilterTitle>Color</FilterTitle>
                         <FilterColor color="black" /> 
+                        <FilterColor color="white" />
                         <FilterColor color="red" />
-                        <FilterColor color="grey" />
+                        <FilterColor color="green" />
+                        <FilterColor color="blue" />
                     </Filter>
                     <Filter>
                         <FilterTitle>Size</FilterTitle>
                         <FilterSize>
-                            <FilterSizOption>XS</FilterSizOption>
-                            <FilterSizOption>S</FilterSizOption>
-                            <FilterSizOption>M</FilterSizOption>
-                            <FilterSizOption>L</FilterSizOption>
-                            <FilterSizOption>XL</FilterSizOption>
+                            <FilterSizOption>15"</FilterSizOption>
+                            <FilterSizOption>16"</FilterSizOption>
+                            <FilterSizOption>17"</FilterSizOption>
+                            <FilterSizOption>18"</FilterSizOption>
+                            <FilterSizOption>20"</FilterSizOption>
                         </FilterSize>
                     </Filter>
                 </FilterContainer>
