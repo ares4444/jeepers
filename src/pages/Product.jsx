@@ -1,9 +1,14 @@
-import { Add, Remove } from "@material-ui/icons"
-import styled from "styled-components"
-import Announcement from "../components/Announcement"
-import Footer from "../components/Footer"
-import Navbar from "../components/Navbar"
-import Newsletter from "../components/Newsletter"
+import { Add, Remove } from "@material-ui/icons";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import styled from "styled-components";
+import Announcement from "../components/Announcement";
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
+import Newsletter from "../components/Newsletter";
+import { addProduct } from "../redux/cartRedux";
+import { useDispatch } from "react-redux";
+import { publicRequest } from "../requestMethod";
 import { mobile } from '../responsive';
 
 const Container = styled.div`
@@ -80,7 +85,7 @@ const FilterSize = styled.select`
 
 `;
 
-const FilterSizOption = styled.option``;
+const FilterSizeOption = styled.option``;
 
 const AddContainer = styled.div`
     display: flex;
@@ -120,45 +125,70 @@ const Button = styled.button`
 `;
 
 const Product = () => {
+    const location = useLocation();
+    const id = location.pathname.split("/")[2];
+    const [product, setProduct] = useState({});
+    const [quantity, setQuantity] = useState(1);
+    const [color, setColor] = useState("");
+    const [size, setSize] = useState("");
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getProducts = async () => {
+            try {
+                const res = await publicRequest.get('/products/find/' + id);
+                setProduct(res.data);
+            } catch (error) {}
+        }
+        getProducts()
+    }, [id]);
+
+    const handleQuantity = (type) => {
+        if (type === "dec") {
+           quantity > 1 && setQuantity(quantity - 1)
+        } else {
+            setQuantity(quantity + 1)
+        }
+    };
+
+    const handleClick = () => {
+        //update cart
+        dispatch(
+            addProduct({ ...product, quantity, color, size })
+        )
+    };
+
   return (
     <Container>
         <Navbar />
         <Announcement/>
         <Wrapper>
             <ImgContainer>
-            <Image src="/images/jw-1.jpg" />
+            <Image src={product.img} />
             </ImgContainer>
             <InfoContainer>
-                <Title>Pro Comp Wheels 31 Series Stryker Matte Black Wheel and All-Terrain Milestar Patagonia AT/R Tire Set; 16x8</Title>
-                <Desc><b>Sporty and Stylish.</b> The Pro Comp Series 7031 Matte Black Wheel has a rugged, sporty look for your 2007-2018 Jeep Wrangler, but it's also incredibly resilient. The aluminum construction makes for safe wheel when you are off-road, or even on the pavement.</Desc>
-                <Price>$ 1,200</Price>
+                <Title>{product.title}</Title>
+                <Desc>{product.desc}</Desc>
+                <Price>${product.price}</Price>
                 <FilterContainer>
                     <Filter>
                         <FilterTitle>Color</FilterTitle>
-                        <FilterColor color="black" /> 
-                        <FilterColor color="white" />
-                        <FilterColor color="red" />
-                        <FilterColor color="green" />
-                        <FilterColor color="blue" />
+                        {product.color?.map((c) => <FilterColor color={c} key={c} onClick={() => setColor(c)} />)}
                     </Filter>
                     <Filter>
                         <FilterTitle>Size</FilterTitle>
-                        <FilterSize>
-                            <FilterSizOption>15"</FilterSizOption>
-                            <FilterSizOption>16"</FilterSizOption>
-                            <FilterSizOption>17"</FilterSizOption>
-                            <FilterSizOption>18"</FilterSizOption>
-                            <FilterSizOption>20"</FilterSizOption>
+                        <FilterSize onChange={(e) => setSize(e.target.value)}>
+                            {product.size?.map((s) => (<FilterSizeOption key={s}>{s}</FilterSizeOption>))}
                         </FilterSize>
                     </Filter>
                 </FilterContainer>
                 <AddContainer>
                     <AmountContainer>
-                        <Remove />
-                        <Amount>1</Amount>
-                        <Add />
+                        <Remove onClick={() => handleQuantity("dec")}/>
+                        <Amount>{quantity}</Amount>
+                        <Add onClick={() => handleQuantity("inc")}/>
                     </AmountContainer>
-                    <Button>Add To Cart</Button>
+                    <Button onClick={handleClick}>Add To Cart</Button>
                 </AddContainer>
             </InfoContainer>
         </Wrapper>

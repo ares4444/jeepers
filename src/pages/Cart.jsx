@@ -1,9 +1,16 @@
-import styled from "styled-components"
-import { Add, Remove } from "@material-ui/icons"
-import Navbar from '../components/Navbar'
-import Announcement from '../components/Announcement'
-import Footer from '../components/Footer'
+import styled from "styled-components";
+import { Add, Remove } from "@material-ui/icons";
+import Navbar from '../components/Navbar';
+import Announcement from '../components/Announcement';
+import Footer from '../components/Footer';
 import { mobile } from '../responsive';
+import { useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { useEffect, useState } from "react";
+import { userRequest } from '../requestMethod';
+import { useNavigate } from "react-router-dom";
+
+const KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div``;
 
@@ -31,6 +38,10 @@ const TopButton = styled.button`
     border: ${props => props.type === "filled" && "none"};
     background-color: ${props => props.type === "filled" ? "black" : "transparent"};
     color: ${props => props.type === "filled" && "white"};
+
+    &:hover{
+        background-color: #ff8b07;
+    }
 `;
 
 const TopTexts = styled.div`
@@ -157,9 +168,34 @@ const Button = styled.button`
     color: white;
     font-weight: 600;
     cursor: pointer;
+
+    &:hover{
+        background-color: #ff8b07;
+    }
 `;
 
 const Cart = () => {
+    const cart = useSelector(state => state.cart);
+    const [stripeToken, setStripeToken] = useState(null);
+    const navigate = useNavigate();
+
+    const onToken = (token) => {
+        setStripeToken(token);
+    }
+
+    useEffect(() => {
+        const makeRequest = async () => {
+            try {
+                const res = await userRequest.post("/checkout/payment", {
+                    tokenId: stripeToken.id,
+                    amount: 5000,
+                });
+                navigate("/success", {data: res.data});
+            } catch {}
+        }
+        stripeToken && makeRequest();
+    }, [stripeToken, cart.total, navigate]);
+
   return (
     <Container>
         <Navbar />
@@ -176,65 +212,59 @@ const Cart = () => {
             </Top>
             <Bottom>
                 <Info>
+                    {cart.products.map((product) => (
                     <Product>
                         <ProductDetail>
-                            <Image src="/images/jw-1.jpg"/>
+                            <Image src={product.img}/>
                             <Details>
-                                <ProductName><b>Product: </b>Pro Comp Wheels 31 Series Stryker Matte Black Wheel and All-Terrain Milestar Patagonia AT/R Tire Set; 16x8</ProductName>
-                                <ProductId><b>ID: </b>159643287</ProductId>
-                                <ProductColor color="black" />
-                                <ProductSize><b>Size: </b>16"</ProductSize>
+                                <ProductName><b>Product: </b>{product.title}</ProductName>
+                                <ProductId><b>ID: </b>{product._id}</ProductId>
+                                <ProductColor color={product.color} />
+                                <ProductSize><b>Size: </b>{product.size}</ProductSize>
                             </Details>
                         </ProductDetail>
                         <PriceDetail>
                             <ProductAmountContainer>
                                 <Add />
-                                <ProductAmount>1</ProductAmount>
+                                <ProductAmount>{product.quantity}</ProductAmount>
                                 <Remove />
                             </ProductAmountContainer>
-                            <ProductPrice>$1,250.47</ProductPrice>
+                            <ProductPrice>${product.price * product.quantity}</ProductPrice>
                         </PriceDetail>
                     </Product>
+                       ))}
                     <Hr />
-                    <Product>
-                        <ProductDetail>
-                            <Image src="/images/jeep-P4.jpg"/>
-                            <Details>
-                                <ProductName><b>Product: </b>Rugged Ridge Fender Flare Delete Kit</ProductName>
-                                <ProductId><b>ID: </b>546328971</ProductId>
-                                <ProductColor color="black" />
-                                <ProductSize><b>Size: </b>N/A</ProductSize>
-                            </Details>
-                        </ProductDetail>
-                        <PriceDetail>
-                            <ProductAmountContainer>
-                                <Add />
-                                <ProductAmount>1</ProductAmount>
-                                <Remove />
-                            </ProductAmountContainer>
-                            <ProductPrice>$254.97</ProductPrice>
-                        </PriceDetail>
-                    </Product>
                 </Info>
                 <Summary>
                     <SummaryTitle>ORDER SUMMARY</SummaryTitle>
                     <SummaryItem>
                         <SummaryItemText>Subtotal </SummaryItemText>
-                        <SummaryItemPrice>$1,505.44</SummaryItemPrice>
+                        <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Estimated Shipping </SummaryItemText>
-                        <SummaryItemPrice>$5.99</SummaryItemPrice>
+                        <SummaryItemPrice>$ 5.99</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem>
                         <SummaryItemText>Shipping Discount </SummaryItemText>
-                        <SummaryItemPrice>$-5.99</SummaryItemPrice>
+                        <SummaryItemPrice>$ -5.99</SummaryItemPrice>
                     </SummaryItem>
                     <SummaryItem type="total">
                         <SummaryItemText>Total </SummaryItemText>
-                        <SummaryItemPrice>$1,505.44</SummaryItemPrice>
+                        <SummaryItemPrice>$ {cart.total - 5.99}</SummaryItemPrice>
                     </SummaryItem>
-                    <Button>CHECKOUT NOW</Button>
+                    <StripeCheckout
+                        name="Jeepers"
+                        image="/images/j-front-img1.png"
+                        billingAddress
+                        shippingAddress
+                        description={`Your total is ${cart.total}`}
+                        amount={cart.total * 100}
+                        token={onToken}
+                        stripeKey={KEY}
+                    >
+                        <Button>CHECKOUT NOW</Button>
+                    </StripeCheckout>
                 </Summary>
             </Bottom>
         </Wrapper>

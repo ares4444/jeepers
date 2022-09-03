@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 
 const Container = styled.div`
@@ -11,7 +12,12 @@ const Image = styled.img`
     height: 100%;
     /* object-fit: cover; */
 `
-const Info = styled.p`
+const Title = styled.h1`
+    color: black;
+    /* margin-bottom: 20px; */
+`
+
+const Info = styled.div`
     /* position: absolute; */
     /* top: 0; */
     /* left: 0; */
@@ -22,10 +28,7 @@ const Info = styled.p`
     justify-content: center;
     align-items: center;
 `
-const Title = styled.h1`
-    /* color: white; */
-    /* margin-bottom: 20px; */
-`
+
 const Button = styled.button`
     color: black;
     font-weight: 600;
@@ -42,11 +45,13 @@ const Button = styled.button`
 const CategoryItem = ({item}) => {
   return (
     <Container>
-        <Image src={item.image}/>
-        <Info>
-            <Title>{item.title}</Title>
-        <Button>SHOP NOW</Button>
-        </Info>
+        <Link to={`/products/${item.category}`} style={{ textDecoration: 'none', color: 'black' }}>
+            <Image src={item.image}/>
+            <Info>
+                <Title>{item.title}</Title>
+                <Button>SHOP NOW</Button>
+            </Info>
+        </Link>
     </Container>
   )
 }

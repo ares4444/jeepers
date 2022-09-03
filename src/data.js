@@ -28,16 +28,19 @@ export const categories = [
         id: 1,
         image: "/images/jeep-A1.png",
         title: "ACCESSORIES",
+        category: "accessories",
     },
     {
         id: 2,
         image: "/images/jeep-W2.png",
         title: "WHEELS & RIMS",
+        category: "wheels-rims",
     },
     {
         id: 3,
         image: "/images/jeep-L1.png",
         title: "LIFT KITS",
+        category: "lift-kits",
     },
 ]
 
